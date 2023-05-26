@@ -1,0 +1,6 @@
+{
+  "shelf-propz": {
+    "component": "ShelfPropz",
+    "composition": "children"
+  }
+}
