@@ -1,9 +1,8 @@
-import React, { ReactNode, useEffect, useState } from 'react'
+import React, { ReactNode, useCallback, useEffect, useState, memo } from 'react'
 
 import { useProduct, useProductDispatch } from 'vtex.product-context'
 import { getSession } from './modules/session'
-import { canUseDOM, NoSSR } from 'vtex.render-runtime'
-import nookies, { parseCookies } from 'nookies'
+import { canUseDOM } from 'vtex.render-runtime'
 
 
 interface IShelfPropz{
@@ -17,8 +16,9 @@ function ShelfPropz({ children }: IShelfPropz) {
 
   const [session, setSession] = useState({
     isAuthenticated: false,
-    user: {},
+    user: {} as any,
   })
+  const [productPromotion, setProductPromotion] = useState({} as any)
 
   const sessionPromise = getSession()
 
@@ -39,61 +39,45 @@ function ShelfPropz({ children }: IShelfPropz) {
 
   useEffect(() => {
     // eslint-disable-next-line vtex/prefer-early-return
-    if (
-      productContext?.productId === '22456' &&
-      productContextDispatch &&
-      session.isAuthenticated
-    ) {
-      productContextDispatch({
-        type: 'SET_PRODUCT',
-        args: {
-          product: {
-            ...productContext,
-            priceRange: {
-              listPrice: {
-                highPrice: 10.0,
-                lowPrice: 10.0,
-              },
-              sellingPrice: {
-                highPrice: 5.99,
-                lowPrice: 5.99,
-              },
-            },
-          },
-        },
-      })
-
-    }
-
     if(canUseDOM){
 
-      const cookies = parseCookies()
 
-      if(!cookies.product_promotion_propz){
+      const getPromotionPropz = async () => {
 
-        const getPromotionPropz = async () => {
-          const response = await fetch('/get-promotion?document=43012319867')
-          const data = await response.json()
+        const response = await fetch('/get-promotion?document=43012319867')
+        const data = await response.json()
 
-          nookies.set(null, 'product_promotion_propz', JSON.stringify(data), {
-            maxAge: new Date(new Date().getMinutes() + 5)
+        data.map((item: any) => {
+          setProductPromotion(item)
+        })
+
+        if(session.user.namespaces?.profile?.isAuthenticated?.value === 'true'){
+
+          data.map((item: { isActive: boolean, promotion: { isActive: boolean, properties: { PRODUCT_ID_INCLUSION: string}}}) => {
+            if(item.promotion.properties.PRODUCT_ID_INCLUSION === productContext?.productReference && productContextDispatch){
+              productContextDispatch({
+                type: 'SET_PRODUCT',
+                args: {
+                  product: {
+                    ...productContext,
+                    priceRange: {
+                      listPrice: {
+                        highPrice: 10.0,
+                        lowPrice: 10.0,
+                      },
+                      sellingPrice: {
+                        highPrice: 5.99,
+                        lowPrice: 5.99,
+                      },
+                    },
+                  },
+                },
+              })
+            }
           })
         }
-
-        getPromotionPropz()
       }
-
-      if(cookies.product_promotion_propz){
-        const dataPromotion = JSON.parse(cookies.product_promotion_propz)
-        dataPromotion.map((itemPromotion: any)=> {
-          console.log(itemPromotion,  productContext)
-          if(itemPromotion === productContext?.productReference){
-
-          }
-          return itemPromotion
-        })
-      }
-
+      getPromotionPropz()
 
     }
 
@@ -101,11 +85,28 @@ function ShelfPropz({ children }: IShelfPropz) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session])
 
+  const renderShelf = useCallback(() =>{
+    const product_id_inclusion = productPromotion?.promotion?.properties?.PRODUCT_ID_INCLUSION
+    const product_id_context = productContext?.productReference
+    const isAutenticated = session.user.namespaces?.profile?.isAuthenticated?.value
+
+      if(product_id_inclusion !== product_id_context){
+        return <>{children}</>
+      }
+
+      if(isAutenticated === 'true' && product_id_inclusion === product_id_context){
+        return <>{children}</>
+      }
+
+      return <p>logar para desbloquer uma promoção</p>
+  }, [productPromotion, session])
+
+  console.log(productPromotion)
+  console.log(session)
+
   return (
-    <NoSSR>
-      <div>{children}</div>
-    </NoSSR>
+    <div>{renderShelf()}</div>
   )
 }
 
-export default ShelfPropz
+export default memo(ShelfPropz)

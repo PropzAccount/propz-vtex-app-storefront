@@ -1,4 +1,9 @@
 {
+  "propz-context": {
+    "component": "PropzContext",
+    "composition": "children"
+  },
+
   "shelf-propz": {
     "component": "ShelfPropz",
     "composition": "children"
