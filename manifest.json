@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "vtex.product-context": "0.x",
+    "vtex.product-summary": "2.x",
     "vtex.order-items": "0.x",
     "vtex.css-handles": "1.x"
   },
