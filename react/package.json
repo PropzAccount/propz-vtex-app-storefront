@@ -21,7 +21,6 @@
     "@vtex/tsconfig": "^0.4.4",
     "apollo-cache-inmemory": "^1.6.5",
     "graphql": "^14.6.0",
-    "lojasantoantonio.propz-frontend": "https://adriano--lojasantoantonio.myvtex.com/_v/private/typings/linked/v1/lojasantoantonio.propz-frontend@0.0.0+build1685106244/public/@types/lojasantoantonio.propz-frontend",
     "typescript": "3.9.7",
     "vtex.css-handles": "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.css-handles@1.0.0/public/@types/vtex.css-handles",
     "vtex.order-items": "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.order-items@0.13.21/public/@types/vtex.order-items",
