@@ -1,22 +1,26 @@
-import React, { useEffect, useState, ReactNode } from 'react'
+/* eslint-disable vtex/prefer-early-return */
+import React, { ReactNode } from 'react'
 import type { ComponentType } from 'react'
-import { ProductSummaryListWithoutQuery } from 'vtex.product-summary'
-import { canUseDOM } from 'vtex.render-runtime'
-import { useCssHandles } from 'vtex.css-handles'
+import { Loading } from 'vtex.render-runtime'
 
-import { getSession } from './modules/session'
+import Banner from './components/Banner'
+import ProductSummaryList from './components/ProductSummaryList'
+import { useSessionAndPromotions } from './hooks/UseSessionAndPromotions'
 
 import './styles/shelf/lojasntoantonio,propz-frontend.css'
 
+interface IProductSummaryProps {
+  product: any
+  actionOnClick: any
+  listName?: any
+  position?: any
+}
+
 interface IPropzShelf {
   children: ReactNode
-  ProductSummary?: ComponentType<{
-    product: any
-    actionOnClick: any
-    listName?: any
-    position?: any
-  }>
+  ProductSummary?: ComponentType<IProductSummaryProps>
   listName: string
+  title: string
   bannerImage: {
     image: {
       desktop: string
@@ -27,81 +31,51 @@ interface IPropzShelf {
   }
 }
 
-const CSS_HANDLES = ['wrapper-shelf-propz', 'shelf-propz--picture'] as const
-
 const PropzShelf = ({
   children,
   bannerImage,
+  title,
   listName,
   ProductSummary,
 }: IPropzShelf) => {
-  const { handles } = useCssHandles(CSS_HANDLES)
+  const { session, promotions, loading } = useSessionAndPromotions()
 
-  const [promotions, setPromotions] = useState([])
-  const [session, setSession] = useState({
-    isAuthenticated: false,
-    user: {} as any,
-  })
+  const isAuthenticated =
+    session.user.namespaces?.profile?.isAuthenticated?.value
 
-  const sessionPromise = getSession()
+  const hasPromotions = promotions.length > 0
 
-  useEffect(() => {
-    if (!sessionPromise) {
-      return
-    }
+  if (
+    (loading && isAuthenticated === 'false') ||
+    (loading && !isAuthenticated)
+  ) {
+    return <Banner bannerImage={bannerImage} />
+  }
 
-    // eslint-disable-next-line no-shadow
-    sessionPromise.then((session) => {
-      setSession({
-        isAuthenticated: true,
-        user: session.response,
-      })
-    })
-  }, [sessionPromise])
+  if (loading && isAuthenticated === 'true' && !hasPromotions) {
+    return <Loading />
+  }
 
-  useEffect(() => {
-    if (canUseDOM) {
-      if (session.user.namespaces?.profile?.isAuthenticated?.value === 'true') {
-        const getProductsPropz = async () => {
-          const response = await fetch(`/get-promotion?document=${43012319867}`)
-          const data = await response.json()
-
-          setPromotions(data)
-        }
-
-        getProductsPropz()
-      }
-    }
-  }, [session])
-
-  return session.user.namespaces?.profile?.isAuthenticated?.value === 'true' ? (
-    <section className={handles['wrapper-shelf-propz']}>
-      <ProductSummaryListWithoutQuery
-        products={promotions}
-        listName={listName}
-        ProductSummary={ProductSummary as any}
-      >
-        {children}
-      </ProductSummaryListWithoutQuery>
-    </section>
-  ) : bannerImage ? (
-    <div className={handles['wrapper-shelf-propz']}>
-      <picture className={handles['shelf-propz--picture']}>
-        <source srcSet={bannerImage.image.mobile} media="(max-width: 639px)" />
-        <img
-          src={bannerImage.image.desktop}
-          alt={bannerImage.alt}
-          title={bannerImage.title}
-        />
-      </picture>
-    </div>
-  ) : null
+  return (
+    <ProductSummaryList
+      ProductSummary={ProductSummary}
+      listName={listName}
+      promotions={promotions}
+      title={title}
+    >
+      {children}
+    </ProductSummaryList>
+  )
 }
 
 PropzShelf.schema = {
   title: 'Shelf Propz',
   type: 'object',
   properties: {
+    title: {
+      type: 'string',
+      title: 'Titulo para a promoção',
+    },
     listName: {
       title: 'Nome da list',
       default: 'Propz list',
