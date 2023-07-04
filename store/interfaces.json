@@ -1,15 +1,5 @@
 {
-  "propz-context": {
-    "component": "PropzContext",
-    "composition": "children"
-  },
-
-  "shelf-propz": {
-    "component": "ShelfPropz",
-    "composition": "children"
-  },
-
-  "propz-shelf": {
+  "list-context-propz": {
     "component": "PropzShelf",
     "composition": "children",
     "allowed": ["product-summary"]
