@@ -45,14 +45,20 @@ const PropzShelf = ({
 
   const hasPromotions = promotions.length > 0
 
-  if (
-    (loading && isAuthenticated === 'false') ||
-    (loading && !isAuthenticated)
-  ) {
+  const isShowBanner =
+    (loading && isAuthenticated === 'false') || (loading && !isAuthenticated)
+
+  const isShowLoading = loading && isAuthenticated === 'true' && !hasPromotions
+
+  if (!bannerImage) {
+    return null
+  }
+
+  if (isShowBanner) {
     return <Banner bannerImage={bannerImage} />
   }
 
-  if (loading && isAuthenticated === 'true' && !hasPromotions) {
+  if (isShowLoading) {
     return <Loading />
   }
 
