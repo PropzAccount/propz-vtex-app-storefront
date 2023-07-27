@@ -32,14 +32,23 @@ export const useSessionAndPromotions = () => {
     if (canUseDOM) {
       if (session.user.namespaces?.profile?.isAuthenticated?.value === 'true') {
         const user = session.user.namespaces.profile.document.value
+        const controller = new AbortController()
+        const { signal } = controller
 
         const getProductsPropz = async () => {
-          const response = await fetch(`/_v/get-promotion?document=${user}`)
-          const dataPromotions = await response.json()
+          try {
+            const response = await fetch(`/_v/get-promotion?document=${user}`, {
+              signal,
+            })
 
-          if (dataPromotions.length > 0) {
-            setPromotions(dataPromotions)
-            setLoading(false)
+            const dataPromotions = await response.json()
+
+            if (dataPromotions.length > 0) {
+              setPromotions(dataPromotions)
+              setLoading(false)
+            }
+          } catch (error) {
+            controller.abort()
           }
         }
 
