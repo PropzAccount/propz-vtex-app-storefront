@@ -3,5 +3,13 @@
     "component": "PropzShelf",
     "composition": "children",
     "allowed": ["product-summary"]
+  },
+
+  "price-pdp-propz": {
+    "component": "PricePDP"
+  },
+
+  "verify-purchase": {
+    "component": "VerifyPurchase"
   }
 }
