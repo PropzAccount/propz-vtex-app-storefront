@@ -25,9 +25,9 @@ const Banner = ({ bannerImage: { image, alt, title } }: IBannerProps) => {
   return (
     <a href="/login" className={handles['wrapper-shelf-propz']}>
       <picture className={handles['shelf-propz--picture']}>
-        <source srcSet={image.mobile} media="(max-width: 639px)" />
+        <source srcSet={image?.mobile} media="(max-width: 639px)" />
         <img
-          src={image.desktop}
+          src={image?.desktop}
           alt={alt}
           title={title}
           loading="lazy"
