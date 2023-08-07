@@ -1,9 +1,10 @@
-import { memo, useEffect } from 'react'
+import React, { ReactNode, memo, useEffect, useState } from 'react'
 import { useProductDispatch, useProduct } from 'vtex.product-context'
 import { canUseDOM } from 'vtex.render-runtime'
 import { MaybeProduct } from 'vtex.product-context/react/ProductTypes'
 
 import { useSessionAndPromotions } from './hooks/UseSessionAndPromotions'
+import Loading from './components/Loading'
 
 interface IUserSession {
   session: any
@@ -11,12 +12,18 @@ interface IUserSession {
   loading: boolean
 }
 
-const PricePDP = () => {
+interface IPricePDP {
+  children: ReactNode
+}
+
+const PricePDP = ({ children }: IPricePDP) => {
   const {
     session,
     promotions,
     loading,
   } = useSessionAndPromotions() as IUserSession
+
+  const [showPricePropz, setShowPricePropz] = useState(true)
 
   const productContextValue = useProduct()
   const product = productContextValue?.product
@@ -54,13 +61,19 @@ const PricePDP = () => {
           })
         }
 
+        setShowPricePropz(false)
+
         return promotion
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, isAuthenticated, loading, promotions])
 
-  return null
+  if (showPricePropz) {
+    return <Loading />
+  }
+
+  return <>{children}</>
 }
 
 export default memo(PricePDP)
