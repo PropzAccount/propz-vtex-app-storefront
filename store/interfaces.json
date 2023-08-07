@@ -6,10 +6,15 @@
   },
 
   "price-pdp-propz": {
-    "component": "PricePDP"
+    "component": "PricePDP",
+    "composition": "children"
   },
 
   "verify-purchase": {
     "component": "VerifyPurchase"
+  },
+
+  "register-purchase": {
+    "component": "RegisterPurchase"
   }
 }
