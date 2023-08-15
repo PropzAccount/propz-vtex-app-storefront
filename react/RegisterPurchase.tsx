@@ -19,7 +19,7 @@ const RegisterPurchase = () => {
             })
 
             if (response.ok) {
-              localStorage.setItem('@propz-data', JSON.stringify({}))
+              localStorage.removeItem('@propz-data')
             }
           }
 
