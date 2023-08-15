@@ -68,167 +68,168 @@ const VerifyPurchase = () => {
     const controller = new AbortController()
     const { signal } = controller
 
-    if (queueStatusRef.current === QueueStatus.FULFILLED) {
+    if (queueStatusRef.current !== QueueStatus.FULFILLED) return
+
+    const processItem = async (item: any) => {
       const productSkuId = product?.items[0].itemId
       const ean = product?.items[0].ean as string
+      const price = product?.priceRange.listPrice.highPrice as number
 
-      if (orderForm.items.length > 0) {
-        const ItemsOrderformUpdated = Promise.all(
-          orderForm.items.map(
-            (item: { id: string; manualPrice: number | null }) => {
-              if (productSkuId === item.id && !item.manualPrice) {
-                const user = session.user.namespaces?.profile.document.value
-                const purchase = getVerifyPurchase({
-                  orderForm,
-                  productEan: ean,
-                  user,
-                })
+      if (productSkuId === item.id && !item.manualPrice) {
+        const user = session.user.namespaces?.profile.document.value
+        const purchase = getVerifyPurchase({
+          orderForm,
+          productEan: ean,
+          price,
+          user,
+        })
 
-                const postVerifyPurchase = async () => {
-                  try {
-                    const response = await fetch('/_v/post-verify-purchase', {
-                      method: 'POST',
-                      body: JSON.stringify({
-                        verifyPurchase: purchase,
-                        orderForm,
-                      }),
-                      signal,
-                    })
+        const postVerifyPurchase = async () => {
+          try {
+            const response = await fetch('/_v/post-verify-purchase', {
+              method: 'POST',
+              body: JSON.stringify({
+                verifyPurchase: purchase,
+                orderForm,
+              }),
+              signal,
+            })
 
-                    const data = await response.json()
+            const data = await response.json()
 
-                    if (data.data) {
-                      enqueue(() =>
-                        refetch({ refreshOutdatedData: true }).then(
-                          ({ data: refreshedData }) => refreshedData.orderForm
-                        )
-                      ).then((updatedOrderForm: Partial<Order>) => {
-                        if (queueStatusRef.current === QueueStatus.FULFILLED) {
-                          setOrderForm(updatedOrderForm)
-                        }
-                      })
+            if (data.data) {
+              enqueue(() =>
+                refetch({ refreshOutdatedData: true }).then(
+                  ({ data: refreshedData }) => refreshedData.orderForm
+                )
+              ).then((updatedOrderForm: Partial<Order>) => {
+                if (queueStatusRef.current === QueueStatus.FULFILLED) {
+                  setOrderForm(updatedOrderForm)
+                }
+              })
 
-                      const propzLocalStorage = localStorage.getItem(
-                        '@propz-data'
-                      )
+              const propzLocalStorage = localStorage.getItem('@propz-data')
 
-                      if (propzLocalStorage) {
-                        const propzData = JSON.parse(propzLocalStorage)
+              if (propzLocalStorage) {
+                const propzData = JSON.parse(propzLocalStorage)
 
-                        const newData = {
-                          ...propzData,
-                          ticket: {
-                            ...propzData.ticket,
-                            amountWithAllDiscount: (
-                              Number(propzData.ticket.amountWithAllDiscount) +
-                              Number(
-                                data.propzPromotions.ticket
-                                  .amountWithAllDiscount
-                              )
-                            ).toFixed(2),
-                            items: [
-                              ...propzData.ticket.items,
-                              data.propzPromotions.ticket.items[0],
-                            ],
-                          },
-                        }
-
-                        localStorage.setItem(
-                          '@propz-data',
-                          JSON.stringify(newData)
-                        )
-                      } else {
-                        localStorage.setItem(
-                          '@propz-data',
-                          JSON.stringify(data.propzPromotions)
-                        )
-                      }
-                    }
-                  } catch (error) {
-                    controller.abort()
-                  }
+                const newData = {
+                  ...propzData,
+                  ticket: {
+                    ...propzData.ticket,
+                    amountWithAllDiscount: (
+                      Number(propzData.ticket.amountWithAllDiscount) +
+                      Number(data.propzPromotions.ticket.amountWithAllDiscount)
+                    ).toFixed(2),
+                    items: [
+                      ...propzData.ticket.items,
+                      data.propzPromotions.ticket.items[0],
+                    ],
+                  },
                 }
 
-                postVerifyPurchase()
+                localStorage.setItem('@propz-data', JSON.stringify(newData))
+              } else {
+                localStorage.setItem(
+                  '@propz-data',
+                  JSON.stringify(data.propzPromotions)
+                )
               }
-
-              return item
             }
-          )
-        )
+          } catch (error) {
+            controller.abort()
+          }
+        }
 
-        ItemsOrderformUpdated.then((itemOrderForm) => {
-          const localStoragePropz = localStorage.getItem('@propz-data')
-
-          const verifyPurchase = new Promise((resolver, reject) => {
-            if (localStoragePropz) {
-              const propz = JSON.parse(localStoragePropz)
-              let amountWithAllDiscount = 0
-
-              const itemsTicket = propz.ticket.items.reduce(
-                (
-                  acc: IItemVerifyPurchase[],
-                  currentTicketItem: IItemVerifyPurchase
-                ) => {
-                  itemOrderForm.map((itemForm: any) => {
-                    const priceDiscountPropz = String(
-                      currentTicketItem.discounts[0].unitPriceWithDiscount.toFixed(
-                        2
-                      )
-                    ).replace(/[^\d]+/, '')
-
-                    const priceManualVtex = Number(
-                      itemForm.manualPrice?.toFixed(2)
-                    )
-
-                    const alreadyExistItem = acc.some(
-                      (currentItem: IItemVerifyPurchase) => {
-                        const pricePropz = Number(
-                          String(
-                            currentItem.discounts[0].unitPriceWithDiscount.toFixed(
-                              2
-                            )
-                          ).replace(/[^\d]+/, '')
-                        )
-
-                        return pricePropz === priceManualVtex
-                      }
-                    )
-
-                    const isSameItem =
-                      Number(priceDiscountPropz) === priceManualVtex
-
-                    if (isSameItem && !alreadyExistItem) {
-                      amountWithAllDiscount += +priceDiscountPropz
-                      acc.push(currentTicketItem)
-                    }
-
-                    return itemForm
-                  })
-
-                  return acc
-                },
-                []
-              )
-
-              resolver({
-                ...propz,
-                ticket: {
-                  ...propz.ticket,
-                  amountWithAllDiscount,
-                  items: itemsTicket,
-                },
-              })
-            } else {
-              reject(localStoragePropz)
-            }
-          })
-
-          verifyPurchase.then((purchase) => {
-            localStorage.setItem('@propz-data', JSON.stringify(purchase))
-          })
-        })
+        postVerifyPurchase()
       }
+
+      return item
+    }
+
+    if (orderForm.items.length > 0) {
+      const ItemsOrderformUpdated = Promise.all(
+        orderForm.items.map((item: any) => processItem(item))
+      )
+
+      ItemsOrderformUpdated.then((itemOrderForm) => {
+        const localStoragePropz = localStorage.getItem('@propz-data')
+
+        const verifyPurchase = new Promise((resolver, reject) => {
+          if (localStoragePropz) {
+            const propz = JSON.parse(localStoragePropz)
+            let amountWithAllDiscount = 0
+
+            const itemsTicket = propz.ticket.items.reduce(
+              (
+                acc: IItemVerifyPurchase[],
+                currentTicketItem: IItemVerifyPurchase
+              ) => {
+                itemOrderForm.map((itemForm: any) => {
+                  const priceDiscountPropz = String(
+                    currentTicketItem.discounts[0].unitPriceWithDiscount.toFixed(
+                      2
+                    )
+                  ).replace(/[^\d]+/, '')
+
+                  const priceManualVtex = Number(
+                    itemForm.manualPrice?.toFixed(2)
+                  )
+
+                  const alreadyExistItem = acc.some(
+                    (currentItem: IItemVerifyPurchase) => {
+                      const pricePropz = Number(
+                        String(
+                          currentItem.discounts[0].unitPriceWithDiscount.toFixed(
+                            2
+                          )
+                        ).replace(/[^\d]+/, '')
+                      )
+
+                      return pricePropz === priceManualVtex
+                    }
+                  )
+
+                  const isSameItem =
+                    Number(priceDiscountPropz) === priceManualVtex
+
+                  if (isSameItem && !alreadyExistItem) {
+                    amountWithAllDiscount += +priceDiscountPropz
+                    acc.push(currentTicketItem)
+                  }
+
+                  return itemForm
+                })
+
+                return acc
+              },
+              []
+            )
+
+            resolver({
+              ...propz,
+              ticket: {
+                ...propz.ticket,
+                amount: orderForm.totalizers[0].value,
+                amountWithAllDiscount,
+                items: itemsTicket,
+              },
+            })
+          } else {
+            reject(localStoragePropz)
+          }
+        })
+
+        verifyPurchase.then((purchase: any) => {
+          if (purchase.ticket.items.length > 0) {
+            localStorage.setItem('@propz-data', JSON.stringify(purchase))
+          } else {
+            localStorage.removeItem('@propz-data')
+          }
+        })
+      })
+    } else {
+      localStorage.removeItem('@propz-data')
     }
 
     return () => {

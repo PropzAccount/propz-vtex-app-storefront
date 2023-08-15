@@ -3,12 +3,14 @@ import { formatPrice } from './formatPrice'
 interface IVerifyPurchase {
   orderForm: any
   productEan: string
+  price: number
   user: string
 }
 
 export const getVerifyPurchase = ({
   orderForm,
   productEan,
+  price,
   user,
 }: IVerifyPurchase) => {
   const itemsTickeks = orderForm.items.reduce(
@@ -30,16 +32,14 @@ export const getVerifyPurchase = ({
       },
       index: number
     ) => {
-      if (!currentItem.manualPrice) {
-        acc.push({
-          itemId: String(index),
-          ean: productEan,
-          unitPrice: Number(formatPrice(currentItem.sellingPrice)),
-          unitSize: 'Unit',
-          quantity: currentItem.quantity,
-          blockUpdate: 0,
-        })
-      }
+      acc.push({
+        itemId: String(index),
+        ean: productEan,
+        unitPrice: Number(formatPrice(price)),
+        unitSize: 'Unit',
+        quantity: currentItem.quantity,
+        blockUpdate: 0,
+      })
 
       return acc
     },
