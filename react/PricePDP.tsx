@@ -61,11 +61,11 @@ const PricePDP = ({ children }: IPricePDP) => {
           })
         }
 
-        setShowPricePropz(false)
-
         return promotion
       })
     }
+
+    setShowPricePropz(false)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, isAuthenticated, loading, promotions])
 
