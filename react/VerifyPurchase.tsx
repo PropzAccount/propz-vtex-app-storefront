@@ -1,6 +1,5 @@
 /* eslint-disable no-console */
-import { useEffect } from 'react'
-import { useProduct } from 'vtex.product-context'
+import { useEffect, memo } from 'react'
 import { OrderForm } from 'vtex.order-manager'
 import { useQuery } from 'react-apollo'
 import type {
@@ -14,9 +13,8 @@ import {
   QueueStatus,
 } from 'vtex.order-manager/OrderQueue'
 
-import { getVerifyPurchase } from './utils/verifyPurchase'
 import { useSessionAndPromotions } from './hooks/UseSessionAndPromotions'
-import { IItemVerifyPurchase } from './typings/veirfyPurchase'
+import { isDeepEqual } from './utils/isDeppEqual'
 
 /**
  * Verifies the purchase of a product and updates the order form accordingly.
@@ -61,176 +59,91 @@ const VerifyPurchase = () => {
   const { enqueue, listen } = useOrderQueue()
   const queueStatusRef = useQueueStatus(listen)
 
-  const productContextValue = useProduct()
-  const product = productContextValue?.product
-
   useEffect(() => {
     const controller = new AbortController()
     const { signal } = controller
-
-    if (queueStatusRef.current !== QueueStatus.FULFILLED) return
-
-    const processItem = async (item: any) => {
-      const productSkuId = product?.items[0].itemId
-      const ean = product?.items[0].ean as string
-      const price = product?.priceRange.listPrice.highPrice as number
-
-      if (productSkuId === item.id && !item.manualPrice) {
-        const user = session.user.namespaces?.profile.document.value
-        const purchase = getVerifyPurchase({
-          orderForm,
-          productEan: ean,
-          price,
-          user,
-        })
-
-        const postVerifyPurchase = async () => {
-          try {
-            const response = await fetch('/_v/post-verify-purchase', {
-              method: 'POST',
-              body: JSON.stringify({
-                verifyPurchase: purchase,
-                orderForm,
-              }),
-              signal,
-            })
-
-            const data = await response.json()
-
-            if (data.data) {
-              enqueue(() =>
-                refetch({ refreshOutdatedData: true }).then(
-                  ({ data: refreshedData }) => refreshedData.orderForm
-                )
-              ).then((updatedOrderForm: Partial<Order>) => {
-                if (queueStatusRef.current === QueueStatus.FULFILLED) {
-                  setOrderForm(updatedOrderForm)
-                }
-              })
-
-              const propzLocalStorage = localStorage.getItem('@propz-data')
-
-              if (propzLocalStorage) {
-                const propzData = JSON.parse(propzLocalStorage)
-
-                const newData = {
-                  ...propzData,
-                  ticket: {
-                    ...propzData.ticket,
-                    amountWithAllDiscount: (
-                      Number(propzData.ticket.amountWithAllDiscount) +
-                      Number(data.propzPromotions.ticket.amountWithAllDiscount)
-                    ).toFixed(2),
-                    items: [
-                      ...propzData.ticket.items,
-                      data.propzPromotions.ticket.items[0],
-                    ],
-                  },
-                }
-
-                localStorage.setItem('@propz-data', JSON.stringify(newData))
-              } else {
-                localStorage.setItem(
-                  '@propz-data',
-                  JSON.stringify(data.propzPromotions)
-                )
-              }
-            }
-          } catch (error) {
-            controller.abort()
-          }
-        }
-
-        postVerifyPurchase()
-      }
-
-      return item
-    }
-
-    if (orderForm.items.length > 0) {
-      const ItemsOrderformUpdated = Promise.all(
-        orderForm.items.map((item: any) => processItem(item))
+    const getPromo = async () => {
+      const documentUser = session?.user?.namespaces?.profile?.document?.value.replace(
+        /[^0-9]+/g,
+        ''
       )
 
-      ItemsOrderformUpdated.then((itemOrderForm) => {
-        const localStoragePropz = localStorage.getItem('@propz-data')
+      const sessionId = session.user.id
 
-        const verifyPurchase = new Promise((resolver, reject) => {
-          if (localStoragePropz) {
-            const propz = JSON.parse(localStoragePropz)
-            let amountWithAllDiscount = 0
+      console.warn(documentUser)
+      const response = fetch('/_v/post-verify-purchase', {
+        method: 'POST',
+        body: JSON.stringify({
+          orderFormId: orderForm.id,
+          document: documentUser,
+          sessionId,
+        }),
+        signal,
+      })
 
-            const itemsTicket = propz.ticket.items.reduce(
-              (
-                acc: IItemVerifyPurchase[],
-                currentTicketItem: IItemVerifyPurchase
-              ) => {
-                itemOrderForm.map((itemForm: any) => {
-                  const priceDiscountPropz = String(
-                    currentTicketItem.discounts[0].unitPriceWithDiscount.toFixed(
-                      2
-                    )
-                  ).replace(/[^\d]+/, '')
+      const data = (await response).json()
 
-                  const priceManualVtex = Number(
-                    itemForm.manualPrice?.toFixed(2)
-                  )
+      return data
+    }
 
-                  const alreadyExistItem = acc.some(
-                    (currentItem: IItemVerifyPurchase) => {
-                      const pricePropz = Number(
-                        String(
-                          currentItem.discounts[0].unitPriceWithDiscount.toFixed(
-                            2
-                          )
-                        ).replace(/[^\d]+/, '')
-                      )
+    const verifyOrderForm = async () => {
+      if (!session.isAuthenticated) return
 
-                      return pricePropz === priceManualVtex
-                    }
-                  )
+      const isAuthenticated =
+        session?.user?.namespaces?.profile?.isAuthenticated?.value === 'true'
 
-                  const isSameItem =
-                    Number(priceDiscountPropz) === priceManualVtex
+      if (queueStatusRef.current !== QueueStatus.FULFILLED || !isAuthenticated)
+        return
 
-                  if (isSameItem && !alreadyExistItem) {
-                    amountWithAllDiscount += +priceDiscountPropz
-                    acc.push(currentTicketItem)
-                  }
+      if (orderForm.items.length > 0) {
+        const order = await getPromo()
 
-                  return itemForm
-                })
+        if (order.response.ticket.items.length > 0) {
+          const propz = localStorage.getItem('@propz/register-puchase')
 
-                return acc
-              },
-              []
-            )
-
-            resolver({
-              ...propz,
-              ticket: {
-                ...propz.ticket,
-                amount: orderForm.totalizers[0].value,
-                amountWithAllDiscount,
-                items: itemsTicket,
-              },
+          if (propz) {
+            enqueue(() =>
+              refetch({ refreshOutdatedData: true }).then(
+                ({ data: refreshedData }) => refreshedData.orderForm
+              )
+            ).then((updatedOrderForm: Partial<Order>) => {
+              if (!isDeepEqual(orderForm, updatedOrderForm)) {
+                localStorage.setItem(
+                  '@propz/register-puchase',
+                  JSON.stringify(order.response)
+                )
+                setOrderForm(updatedOrderForm)
+              } else {
+                localStorage.setItem(
+                  '@propz/register-puchase',
+                  JSON.stringify(order.response)
+                )
+              }
             })
           } else {
-            reject(localStoragePropz)
+            localStorage.setItem(
+              '@propz/register-puchase',
+              JSON.stringify(order.response)
+            )
+            enqueue(() =>
+              refetch({ refreshOutdatedData: true }).then(
+                ({ data: refreshedData }) => refreshedData.orderForm
+              )
+            ).then((updatedOrderForm: Partial<Order>) => {
+              localStorage.setItem(
+                '@propz/count',
+                JSON.stringify(updatedOrderForm.items?.length)
+              )
+              setOrderForm(updatedOrderForm)
+            })
           }
-        })
-
-        verifyPurchase.then((purchase: any) => {
-          if (purchase.ticket.items.length > 0) {
-            localStorage.setItem('@propz-data', JSON.stringify(purchase))
-          } else {
-            localStorage.removeItem('@propz-data')
-          }
-        })
-      })
-    } else {
-      localStorage.removeItem('@propz-data')
+        }
+      } else {
+        localStorage.removeItem('@propz/register-puchase')
+      }
     }
+
+    verifyOrderForm()
 
     return () => {
       controller.abort()
@@ -241,4 +154,4 @@ const VerifyPurchase = () => {
   return null
 }
 
-export default VerifyPurchase
+export default memo(VerifyPurchase)
