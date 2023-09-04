@@ -7,25 +7,29 @@ const RegisterPurchase = () => {
     const { signal } = controller
 
     if (canUseDOM) {
-      const register = localStorage.getItem('@propz-data')
+      const register = localStorage.getItem('@propz/register-puchase')
 
       if (register) {
-        try {
-          const registerPurchase = async () => {
-            const response = await fetch('/_v/post-register-purchase', {
-              method: 'POST',
-              signal,
-              body: register,
-            })
+        const registerPuchase = JSON.parse(register)
 
-            if (response.ok) {
-              localStorage.removeItem('@propz-data')
+        if (registerPuchase.ticket.items > 0) {
+          try {
+            const registerPurchase = async () => {
+              const response = await fetch('/_v/post-register-purchase', {
+                method: 'POST',
+                signal,
+                body: register,
+              })
+
+              if (response.ok) {
+                localStorage.removeItem('@propz/register-puchase')
+              }
             }
-          }
 
-          registerPurchase()
-        } catch (error) {
-          console.warn(error)
+            registerPurchase()
+          } catch (error) {
+            console.warn(error)
+          }
         }
       }
     }
