@@ -1,7 +1,7 @@
 /* eslint-disable vtex/prefer-early-return */
 import React, { ReactNode } from 'react'
 import type { ComponentType } from 'react'
-import { Loading } from 'vtex.render-runtime'
+// import { Loading } from 'vtex.render-runtime'
 
 import Banner from './components/Banner'
 import ProductSummaryList from './components/ProductSummaryList'
@@ -48,8 +48,6 @@ const PropzShelf = ({
   const isShowBanner =
     (loading && isAuthenticated === 'false') || (loading && !isAuthenticated)
 
-  const isShowLoading = loading && isAuthenticated === 'true' && !hasPromotions
-
   if (!bannerImage) {
     return null
   }
@@ -58,19 +56,17 @@ const PropzShelf = ({
     return <Banner bannerImage={bannerImage} />
   }
 
-  if (isShowLoading) {
-    return <Loading />
-  }
-
   return (
-    <ProductSummaryList
-      ProductSummary={ProductSummary}
-      listName={listName}
-      promotions={promotions}
-      title={title}
-    >
-      {children}
-    </ProductSummaryList>
+    hasPromotions && (
+      <ProductSummaryList
+        ProductSummary={ProductSummary}
+        listName={listName}
+        promotions={promotions}
+        title={title}
+      >
+        {children}
+      </ProductSummaryList>
+    )
   )
 }
 
