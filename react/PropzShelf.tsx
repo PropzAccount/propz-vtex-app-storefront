@@ -28,6 +28,7 @@ interface IPropzShelf {
     }
     alt: string
     title: string
+    link: string
   }
 }
 
@@ -43,7 +44,7 @@ const PropzShelf = ({
   const isAuthenticated =
     session.user.namespaces?.profile?.isAuthenticated?.value
 
-  const hasPromotions = promotions.length > 0
+  const hasPromotions = promotions?.products?.length > 0
 
   const isShowBanner =
     (loading && isAuthenticated === 'false') || (loading && !isAuthenticated)
@@ -61,7 +62,7 @@ const PropzShelf = ({
       <ProductSummaryList
         ProductSummary={ProductSummary}
         listName={listName}
-        promotions={promotions}
+        promotions={promotions.products}
         title={title}
       >
         {children}
@@ -113,6 +114,10 @@ PropzShelf.schema = {
         },
         title: {
           title: 'Titulo para a imagem',
+          type: 'string',
+        },
+        link: {
+          title: 'Link do banner',
           type: 'string',
         },
       },

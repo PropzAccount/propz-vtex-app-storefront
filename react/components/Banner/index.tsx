@@ -17,13 +17,14 @@ interface IBannerProps {
     }
     alt: string
     title: string
+    link: string
   }
 }
-const Banner = ({ bannerImage: { image, alt, title } }: IBannerProps) => {
+const Banner = ({ bannerImage: { image, alt, title, link } }: IBannerProps) => {
   const { handles } = useCssHandles(CSS_HANDLES)
 
   return (
-    <a href="/login" className={handles['wrapper-shelf-propz']}>
+    <a href={link} className={handles['wrapper-shelf-propz']}>
       <picture className={handles['shelf-propz--picture']}>
         <source srcSet={image?.mobile} media="(max-width: 639px)" />
         <img
