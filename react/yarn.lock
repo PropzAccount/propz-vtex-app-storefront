@@ -3595,9 +3595,9 @@ lodash@^4.17.15, lodash@^4.17.19:
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.20.tgz#b44a9b6297bcb698f1c51a3545a2b3b368d59c52"
   integrity sha512-PlhdFcillOINfeV7Ni6oF1TAEayyZBoZ8bcshTHqOYJYlrqzRK5hagpagky5o4HfCzzd1TRkXPMFq6cKk9rGmA==
 
-"lojasantoantonio.propz-frontend@https://samuel--lojasantoantonio.myvtex.com/_v/private/typings/linked/v1/lojasantoantonio.propz-frontend@0.0.0+build1690893137/public/@types/lojasantoantonio.propz-frontend":
+"lojasantoantonio.propz-frontend@https://samuel--lojasantoantonio.myvtex.com/_v/private/typings/linked/v1/lojasantoantonio.propz-frontend@0.0.0+build1693926857/public/@types/lojasantoantonio.propz-frontend":
   version "0.0.0"
-  resolved "https://samuel--lojasantoantonio.myvtex.com/_v/private/typings/linked/v1/lojasantoantonio.propz-frontend@0.0.0+build1690893137/public/@types/lojasantoantonio.propz-frontend#1804991c291cec4a03f9c5d5a828d6a67282c8b8"
+  resolved "https://samuel--lojasantoantonio.myvtex.com/_v/private/typings/linked/v1/lojasantoantonio.propz-frontend@0.0.0+build1693926857/public/@types/lojasantoantonio.propz-frontend#76c8cb1ea22a759431b93084e282a2bcac75c825"
 
 lolex@^5.0.0:
   version "5.1.2"
@@ -4968,9 +4968,9 @@ verror@1.10.0:
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
 
-"vtex.checkout-graphql@http://vtex.vtexassets.com/_v/public/typings/v1/vtex.checkout-graphql@0.66.2/public/@types/vtex.checkout-graphql":
-  version "0.66.2"
-  resolved "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.checkout-graphql@0.66.2/public/@types/vtex.checkout-graphql#b3a6ca8b9bb304d85a2b69b6cd947bab7f3529d4"
+"vtex.checkout-graphql@http://vtex.vtexassets.com/_v/public/typings/v1/vtex.checkout-graphql@0.66.3/public/@types/vtex.checkout-graphql":
+  version "0.66.3"
+  resolved "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.checkout-graphql@0.66.3/public/@types/vtex.checkout-graphql#a0a8bc4e91627678877ea3b8b59f003aa5887002"
 
 "vtex.checkout-resources@http://vtex.vtexassets.com/_v/public/typings/v1/vtex.checkout-resources@0.49.0/public/@types/vtex.checkout-resources":
   version "0.49.0"
@@ -4992,13 +4992,17 @@ verror@1.10.0:
   version "0.10.0"
   resolved "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.product-context@0.10.0/public/@types/vtex.product-context#c5e2a97b404004681ee12f4fff7e6b62157786cc"
 
+"vtex.product-summary-context@http://vtex.vtexassets.com/_v/public/typings/v1/vtex.product-summary-context@0.9.0/public/@types/vtex.product-summary-context":
+  version "0.9.0"
+  resolved "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.product-summary-context@0.9.0/public/@types/vtex.product-summary-context#44c411f37e19c220921ec5af640900b6f95c1d06"
+
 "vtex.product-summary@http://vtex.vtexassets.com/_v/public/typings/v1/vtex.product-summary@2.83.1/public/@types/vtex.product-summary":
   version "2.83.1"
   resolved "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.product-summary@2.83.1/public/@types/vtex.product-summary#5c8cdaaca7648462cad2fddc6742696fca57dcc8"
 
-"vtex.render-runtime@http://vtex.vtexassets.com/_v/public/typings/v1/vtex.render-runtime@8.133.2/public/@types/vtex.render-runtime":
-  version "8.133.2"
-  resolved "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.render-runtime@8.133.2/public/@types/vtex.render-runtime#6fc9c79c52f292c67f583e96d66a56b7b61eabd1"
+"vtex.render-runtime@http://vtex.vtexassets.com/_v/public/typings/v1/vtex.render-runtime@8.134.0/public/@types/vtex.render-runtime":
+  version "8.134.0"
+  resolved "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.render-runtime@8.134.0/public/@types/vtex.render-runtime#ee5a73993a75e45de60ccceac1ef74ab6b9202a3"
 
 "vtex.structured-data@http://vtex.vtexassets.com/_v/public/typings/v1/vtex.structured-data@0.12.0/public/@types/vtex.structured-data":
   version "0.12.0"

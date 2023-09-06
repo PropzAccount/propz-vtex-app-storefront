@@ -18,7 +18,8 @@
     "vtex.checkout-resources": "0.x",
     "vtex.checkout-graphql": "0.x",
     "vtex.css-handles": "1.x",
-    "vtex.structured-data": "0.x"
+    "vtex.structured-data": "0.x",
+    "vtex.product-summary-context": "0.x"
   },
   "registries": ["smartcheckout"],
   "policies": [],
