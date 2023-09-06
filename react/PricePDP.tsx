@@ -21,7 +21,7 @@ const PricePDP = ({ children }: IPricePDP) => {
     session,
     promotions,
     loading,
-  } = useSessionAndPromotions() as IUserSession
+  } = (useSessionAndPromotions() as unknown) as IUserSession
 
   const [showPricePropz, setShowPricePropz] = useState(true)
 

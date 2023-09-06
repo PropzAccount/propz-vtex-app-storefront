@@ -1,10 +1,33 @@
 import { useEffect, useState } from 'react'
 import { canUseDOM } from 'vtex.render-runtime'
+import { Product } from 'vtex.product-context/react/ProductTypes'
 
 import { getSession } from '../modules/session'
 
+interface IPromotionMaxPerCustumer {
+  pricePropz: Array<{
+    sellingPrice: number
+    listPrice: number
+  }>
+  priceVtex: Array<{
+    sellingPrice: number
+    listPrice: number
+  }>
+  maxItems: number
+  product: string
+}
+
+interface IPromotions {
+  products: Product[]
+  promotionMaxPerCustomer: IPromotionMaxPerCustumer[]
+}
+
 export const useSessionAndPromotions = () => {
-  const [promotions, setPromotions] = useState([])
+  const [promotions, setPromotions] = useState<IPromotions>({
+    products: [],
+    promotionMaxPerCustomer: [],
+  })
+
   const [session, setSession] = useState({
     isAuthenticated: false,
     user: {} as any,
@@ -41,11 +64,15 @@ export const useSessionAndPromotions = () => {
               signal,
             })
 
-            const dataPromotions = await response.json()
+            const dataPromotions: IPromotions = await response.json()
 
-            if (dataPromotions.length > 0) {
+            if (dataPromotions.products.length > 0) {
               setPromotions(dataPromotions)
               setLoading(false)
+              localStorage.setItem(
+                '@propz/promotion-ma-per-customer',
+                JSON.stringify(dataPromotions.promotionMaxPerCustomer)
+              )
             }
           } catch (error) {
             controller.abort()
