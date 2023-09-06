@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { useEffect, memo } from 'react'
+import { useEffect, memo, useCallback } from 'react'
 import { OrderForm } from 'vtex.order-manager'
 import { useQuery } from 'react-apollo'
 import type {
@@ -59,95 +59,91 @@ const VerifyPurchase = () => {
   const { enqueue, listen } = useOrderQueue()
   const queueStatusRef = useQueueStatus(listen)
 
-  useEffect(() => {
-    const controller = new AbortController()
-    const { signal } = controller
-    const getPromo = async () => {
-      const documentUser = session?.user?.namespaces?.profile?.document?.value.replace(
-        /[^0-9]+/g,
-        ''
-      )
+  const getPromo = useCallback(async () => {
+    const documentUser = session?.user?.namespaces?.profile?.document?.value.replace(
+      /[^0-9]+/g,
+      ''
+    )
 
-      const sessionId = session.user.id
+    const sessionId = session.user.id
 
-      console.warn(documentUser)
-      const response = fetch('/_v/post-verify-purchase', {
-        method: 'POST',
-        body: JSON.stringify({
-          orderFormId: orderForm.id,
-          document: documentUser,
-          sessionId,
-        }),
-        signal,
-      })
+    const response = fetch('/_v/post-verify-purchase', {
+      method: 'POST',
+      body: JSON.stringify({
+        orderFormId: orderForm.id,
+        document: documentUser,
+        sessionId,
+      }),
+      cache: 'force-cache',
+    })
 
-      const data = (await response).json()
+    const data = (await response).json()
 
-      return data
-    }
+    return data
+  }, [
+    orderForm.id,
+    session.user.id,
+    session.user?.namespaces?.profile?.document?.value,
+  ])
 
-    const verifyOrderForm = async () => {
-      if (!session.isAuthenticated) return
+  const verifyOrderForm = useCallback(async () => {
+    if (!session.isAuthenticated) return
 
-      const isAuthenticated =
-        session?.user?.namespaces?.profile?.isAuthenticated?.value === 'true'
+    const isAuthenticated =
+      session?.user?.namespaces?.profile?.isAuthenticated?.value === 'true'
 
-      if (queueStatusRef.current !== QueueStatus.FULFILLED || !isAuthenticated)
-        return
+    if (queueStatusRef.current !== QueueStatus.FULFILLED || !isAuthenticated)
+      return
 
-      if (orderForm.items.length > 0) {
-        const order = await getPromo()
+    if (orderForm.items.length > 0) {
+      const order = await getPromo()
 
-        if (order.response.ticket.items.length > 0) {
-          const propz = localStorage.getItem('@propz/register-puchase')
+      if (order.response.ticket.items.length > 0) {
+        const propz = localStorage.getItem('@propz/register-puchase')
 
-          if (propz) {
-            enqueue(() =>
-              refetch({ refreshOutdatedData: true }).then(
-                ({ data: refreshedData }) => refreshedData.orderForm
-              )
-            ).then((updatedOrderForm: Partial<Order>) => {
-              if (!isDeepEqual(orderForm, updatedOrderForm)) {
-                localStorage.setItem(
-                  '@propz/register-puchase',
-                  JSON.stringify(order.response)
-                )
-                setOrderForm(updatedOrderForm)
-              } else {
-                localStorage.setItem(
-                  '@propz/register-puchase',
-                  JSON.stringify(order.response)
-                )
-              }
-            })
-          } else {
-            localStorage.setItem(
-              '@propz/register-puchase',
-              JSON.stringify(order.response)
+        if (propz) {
+          enqueue(() =>
+            refetch({ refreshOutdatedData: true }).then(
+              ({ data: refreshedData }) => refreshedData.orderForm
             )
-            enqueue(() =>
-              refetch({ refreshOutdatedData: true }).then(
-                ({ data: refreshedData }) => refreshedData.orderForm
-              )
-            ).then((updatedOrderForm: Partial<Order>) => {
+          ).then((updatedOrderForm: Partial<Order>) => {
+            if (!isDeepEqual(orderForm, updatedOrderForm)) {
               localStorage.setItem(
-                '@propz/count',
-                JSON.stringify(updatedOrderForm.items?.length)
+                '@propz/register-puchase',
+                JSON.stringify(order.response)
               )
               setOrderForm(updatedOrderForm)
-            })
-          }
+            } else {
+              localStorage.setItem(
+                '@propz/register-puchase',
+                JSON.stringify(order.response)
+              )
+            }
+          })
+        } else {
+          localStorage.setItem(
+            '@propz/register-puchase',
+            JSON.stringify(order.response)
+          )
+          enqueue(() =>
+            refetch({ refreshOutdatedData: true }).then(
+              ({ data: refreshedData }) => refreshedData.orderForm
+            )
+          ).then((updatedOrderForm: Partial<Order>) => {
+            setOrderForm(updatedOrderForm)
+          })
         }
-      } else {
-        localStorage.removeItem('@propz/register-puchase')
       }
+    } else {
+      localStorage.removeItem('@propz/register-puchase')
     }
 
+    return orderForm
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [orderForm])
+
+  useEffect(() => {
     verifyOrderForm()
-
-    return () => {
-      controller.abort()
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orderForm])
 
