@@ -74,7 +74,6 @@ const VerifyPurchase = () => {
         document: documentUser,
         sessionId,
       }),
-      cache: 'force-cache',
     })
 
     const data = (await response).json()
@@ -96,7 +95,7 @@ const VerifyPurchase = () => {
       return
 
     if (orderForm.items.length > 0) {
-      const order = await getPromo()
+      const order = await enqueue(() => getPromo())
 
       if (order.response.ticket.items.length > 0) {
         const propz = localStorage.getItem('@propz/register-puchase')

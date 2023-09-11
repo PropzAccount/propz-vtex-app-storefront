@@ -12,7 +12,7 @@ const RegisterPurchase = () => {
       if (register) {
         const registerPuchase = JSON.parse(register)
 
-        if (registerPuchase.ticket.items > 0) {
+        if (registerPuchase.ticket.items.length > 0) {
           try {
             const registerPurchase = async () => {
               const response = await fetch('/_v/post-register-purchase', {

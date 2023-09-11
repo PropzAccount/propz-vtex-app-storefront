@@ -6,22 +6,12 @@ import { MaybeProduct } from 'vtex.product-context/react/ProductTypes'
 import { useSessionAndPromotions } from './hooks/UseSessionAndPromotions'
 import Loading from './components/Loading'
 
-interface IUserSession {
-  session: any
-  promotions: any[]
-  loading: boolean
-}
-
 interface IPricePDP {
   children: ReactNode
 }
 
 const PricePDP = ({ children }: IPricePDP) => {
-  const {
-    session,
-    promotions,
-    loading,
-  } = (useSessionAndPromotions() as unknown) as IUserSession
+  const { session, promotions, loading } = useSessionAndPromotions()
 
   const [showPricePropz, setShowPricePropz] = useState(true)
 
@@ -36,10 +26,13 @@ const PricePDP = ({ children }: IPricePDP) => {
     const productId = product?.productId
 
     const isChangePrice =
-      Boolean(isAuthenticated) && canUseDOM && !loading && promotions.length > 0
+      Boolean(isAuthenticated) &&
+      canUseDOM &&
+      !loading &&
+      promotions.products.length > 0
 
     if (isChangePrice) {
-      promotions.forEach((promotion: any) => {
+      promotions.products.forEach((promotion: any) => {
         if (promotion.productId === productId) {
           dispatch?.({
             type: 'SET_PRODUCT',
