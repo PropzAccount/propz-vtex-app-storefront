@@ -58,11 +58,16 @@ export const useSessionAndPromotions = () => {
         const controller = new AbortController()
         const { signal } = controller
 
+        const documentUser = user.replace(/[^0-9]+/g, '')
+
         const getProductsPropz = async () => {
           try {
-            const response = await fetch(`/_v/get-promotion?document=${user}`, {
-              signal,
-            })
+            const response = await fetch(
+              `/_v/get-promotion?document=${documentUser}`,
+              {
+                signal,
+              }
+            )
 
             const dataPromotions: IPromotions = await response.json()
 
