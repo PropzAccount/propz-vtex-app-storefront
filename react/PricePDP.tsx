@@ -11,7 +11,7 @@ interface IPricePDP {
 }
 
 const PricePDP = ({ children }: IPricePDP) => {
-  const { session, promotions, loading } = useSessionAndPromotions()
+  const { session } = useSessionAndPromotions()
 
   const [showPricePropz, setShowPricePropz] = useState(true)
 
@@ -19,21 +19,39 @@ const PricePDP = ({ children }: IPricePDP) => {
   const product = productContextValue?.product
   const dispatch = useProductDispatch()
 
-  const isAuthenticated = session.user.namespaces?.profile?.isAuthenticated
-    ?.value as boolean
-
   useEffect(() => {
-    const productId = product?.productId
+    if (!session.isAuthenticated) {
+      setShowPricePropz(false)
 
-    const isChangePrice =
-      Boolean(isAuthenticated) &&
-      canUseDOM &&
-      !loading &&
-      promotions.products.length > 0
+      return
+    }
 
-    if (isChangePrice) {
-      promotions.products.forEach((promotion: any) => {
-        if (promotion.productId === productId) {
+    const documentUser = session?.user?.namespaces?.profile?.document?.value.replace(
+      /[^0-9]+/g,
+      ''
+    )
+
+    const controller = new AbortController()
+    const { signal } = controller
+
+    if (canUseDOM) {
+      const getPrice = async () => {
+        const response = await fetch('/_v/post-price-pdp', {
+          method: 'POST',
+          body: JSON.stringify({
+            document: documentUser,
+            product,
+          }),
+          signal,
+        })
+
+        const data = await response.json()
+
+        const isChangePrice =
+          data.priceRange.sellingPrice.highPrice !==
+          product?.priceRange.sellingPrice.highPrice
+
+        if (isChangePrice) {
           dispatch?.({
             type: 'SET_PRODUCT',
             args: {
@@ -41,12 +59,12 @@ const PricePDP = ({ children }: IPricePDP) => {
                 ...product,
                 priceRange: {
                   sellingPrice: {
-                    highPrice: promotion.priceRange.sellingPrice.highPrice,
-                    lowPrice: promotion.priceRange.sellingPrice.lowPrice,
+                    highPrice: data.priceRange.sellingPrice.highPrice,
+                    lowPrice: data.priceRange.sellingPrice.lowPrice,
                   },
                   listPrice: {
-                    highPrice: promotion.priceRange.listPrice.lowPrice,
-                    lowPrice: promotion.priceRange.listPrice.lowPrice,
+                    highPrice: data.priceRange.listPrice.highPrice,
+                    lowPrice: data.priceRange.listPrice.lowPrice,
                   },
                 },
               } as MaybeProduct,
@@ -54,13 +72,21 @@ const PricePDP = ({ children }: IPricePDP) => {
           })
         }
 
-        return promotion
-      })
+        setShowPricePropz(false)
+      }
+
+      getPrice()
     }
 
-    setShowPricePropz(false)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, isAuthenticated, loading, promotions])
+    return () => {
+      controller.abort()
+    }
+  }, [
+    dispatch,
+    product,
+    session.isAuthenticated,
+    session?.user?.namespaces?.profile?.document?.value,
+  ])
 
   if (showPricePropz) {
     return <Loading />
