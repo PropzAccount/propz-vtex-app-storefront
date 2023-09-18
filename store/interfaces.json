@@ -16,5 +16,10 @@
 
   "register-purchase": {
     "component": "RegisterPurchase"
+  },
+
+  "mechanico-promotion": {
+    "component": "MechanicPromotion",
+    "render": "client"
   }
 }

@@ -1,0 +1,12 @@
+.mechanic-message {
+  margin: 0 auto;
+  font-family: 'Lato', sans-serif;
+  color: #fff;
+  font-weight: bold;
+  font-size: 0.75rem;
+  text-align: center;
+  background: #272727;
+  width: calc(100% - 32px);
+  padding: 5px;
+  border-radius: 5px;
+}
