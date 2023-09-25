@@ -18,7 +18,7 @@
     "component": "RegisterPurchase"
   },
 
-  "mechanico-promotion": {
+  "mechanic-promotion": {
     "component": "MechanicPromotion",
     "render": "client"
   }
