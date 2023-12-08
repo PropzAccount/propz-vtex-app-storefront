@@ -1,5 +1,5 @@
 {
-  "vendor": "lojasantoantonio",
+  "vendor": "propzpartnerbr",
   "name": "propz-frontend",
   "version": "0.0.0",
   "title": "Propz frontend",
@@ -21,7 +21,9 @@
     "vtex.structured-data": "0.x",
     "vtex.product-summary-context": "0.x"
   },
-  "registries": ["smartcheckout"],
+  "registries": [
+    "smartcheckout"
+  ],
   "policies": [],
   "$schema": "https://raw.githubusercontent.com/vtex/node-vtex-api/master/gen/manifest.schema"
 }

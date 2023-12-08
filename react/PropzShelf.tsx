@@ -1,6 +1,6 @@
 /* eslint-disable vtex/prefer-early-return */
-import React, { ReactNode } from 'react'
-import type { ComponentType } from 'react'
+import React from 'react'
+import type { ComponentType, ReactNode } from 'react'
 // import { Loading } from 'vtex.render-runtime'
 
 import Banner from './components/Banner'
@@ -56,6 +56,8 @@ const PropzShelf = ({
   if (isShowBanner) {
     return <Banner bannerImage={bannerImage} />
   }
+
+  console.log(promotions.products)
 
   return (
     hasPromotions && (

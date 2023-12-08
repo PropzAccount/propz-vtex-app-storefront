@@ -60,10 +60,11 @@ const VerifyPurchase = () => {
   const queueStatusRef = useQueueStatus(listen)
 
   const getPromo = useCallback(async () => {
-    const documentUser = session?.user?.namespaces?.profile?.document?.value.replace(
-      /[^0-9]+/g,
-      ''
-    )
+    const documentUser =
+      session?.user?.namespaces?.profile?.document?.value.replace(
+        /[^0-9]+/g,
+        ''
+      )
 
     const sessionId = session.user.id
 

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { canUseDOM } from 'vtex.render-runtime'
-import { Product } from 'vtex.product-context/react/ProductTypes'
+import type { Product } from 'vtex.product-context/react/ProductTypes'
 
 import { getSession } from '../modules/session'
 
@@ -42,7 +42,7 @@ export const useSessionAndPromotions = () => {
       return
     }
 
-    // eslint-disable-next-line no-shadow
+    // eslint-disable-next-line no-shadow, @typescript-eslint/no-shadow
     sessionPromise.then((session) => {
       setSession({
         isAuthenticated: true,
@@ -54,11 +54,11 @@ export const useSessionAndPromotions = () => {
   useEffect(() => {
     if (canUseDOM) {
       if (session.user.namespaces?.profile?.isAuthenticated?.value === 'true') {
-        const user = session.user.namespaces.profile.document.value
+        const user = session.user.namespaces.profile.document?.value
         const controller = new AbortController()
         const { signal } = controller
 
-        const documentUser = user.replace(/[^0-9]+/g, '')
+        const documentUser = user?.replace(/[^0-9]+/g, '')
 
         const getProductsPropz = async () => {
           try {
