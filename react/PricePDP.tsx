@@ -49,7 +49,8 @@ const PricePDP = ({ children }: IPricePDP) => {
 
         const isChangePrice =
           data.priceRange.sellingPrice.highPrice !==
-          product?.priceRange.sellingPrice.highPrice
+            product?.priceRange.sellingPrice.highPrice &&
+          data.productId === product?.productId
 
         if (isChangePrice) {
           dispatch?.({
@@ -67,7 +68,45 @@ const PricePDP = ({ children }: IPricePDP) => {
                     lowPrice: data.priceRange.listPrice.lowPrice,
                   },
                 },
+                items: [
+                  {
+                    ...product?.items[0],
+                    sellers: [
+                      {
+                        ...product?.items[0].sellers[0],
+                        commertialOffer: {
+                          ...product?.items[0].sellers[0].commertialOffer,
+                          Price: data.priceRange.sellingPrice.highPrice,
+                          spotPrice: data.priceRange.sellingPrice.highPrice,
+                          PriceWithoutDiscount:
+                            data.priceRange.sellingPrice.highPrice,
+                        },
+                      },
+                    ],
+                  },
+                ],
               } as MaybeProduct,
+            },
+          })
+
+          dispatch?.({
+            type: 'SET_SELECTED_ITEM',
+            args: {
+              item: {
+                ...productContextValue?.selectedItem,
+                sellers: [
+                  {
+                    ...productContextValue?.selectedItem?.sellers[0],
+                    commertialOffer: {
+                      ...product?.items[0].sellers[0].commertialOffer,
+                      Price: data.priceRange.sellingPrice.highPrice,
+                      spotPrice: data.priceRange.sellingPrice.highPrice,
+                      PriceWithoutDiscount:
+                        data.priceRange.sellingPrice.highPrice,
+                    },
+                  },
+                ],
+              } as any,
             },
           })
         }
@@ -84,6 +123,7 @@ const PricePDP = ({ children }: IPricePDP) => {
   }, [
     dispatch,
     product,
+    productContextValue,
     session.isAuthenticated,
     session?.user?.namespaces?.profile?.document?.value,
   ])
