@@ -57,8 +57,6 @@ const PropzShelf = ({
     return <Banner bannerImage={bannerImage} />
   }
 
-  console.log(promotions.products)
-
   return (
     hasPromotions && (
       <ProductSummaryList
