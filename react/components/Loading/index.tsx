@@ -1,7 +1,7 @@
 import React from 'react'
 import { useCssHandles } from 'vtex.css-handles'
 
-import './lojasantoantonio.propz-frontend.css'
+import './propzpartnerbr.propz-frontend.css'
 
 const CSS_HANDLES = ['skeleton-loader-button'] as const
 

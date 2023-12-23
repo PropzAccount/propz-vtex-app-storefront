@@ -3,7 +3,7 @@ import type { ComponentType } from 'react'
 import { useCssHandles } from 'vtex.css-handles'
 import { ProductSummaryListWithoutQuery } from 'vtex.product-summary'
 
-import '../../styles/shelf/lojasntoantonio,propz-frontend.css'
+import '../../styles/shelf/propzpartnerbr.propz-frontend.css'
 
 const CSS_HANDLES = [
   'wrapper-shelf-propz',

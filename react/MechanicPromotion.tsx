@@ -4,7 +4,7 @@ import { useProduct } from 'vtex.product-context'
 import { useCssHandles } from 'vtex.css-handles'
 
 import { PromotionType } from './typings/promotionPropz'
-import './styles/messageMechanic/lojasantoantonio.propz-frontend.css'
+import './styles/messageMechanic/propzpartnerbr.propz-frontend.css'
 import { useSessionAndPromotions } from './hooks/UseSessionAndPromotions'
 
 const CSS_HANDLES = ['mechanic-message'] as const

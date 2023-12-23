@@ -7,7 +7,7 @@ import Banner from './components/Banner'
 import ProductSummaryList from './components/ProductSummaryList'
 import { useSessionAndPromotions } from './hooks/UseSessionAndPromotions'
 
-import './styles/shelf/lojasntoantonio,propz-frontend.css'
+import './styles/shelf/propzpartnerbr.propz-frontend.css'
 
 interface IProductSummaryProps {
   product: any

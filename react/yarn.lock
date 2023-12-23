@@ -4062,9 +4062,9 @@ prop-types@^15.6.2, prop-types@^15.7.2:
     object-assign "^4.1.1"
     react-is "^16.8.1"
 
-"propzpartnerbr.propz-frontend@https://samuel--propzpartnerbr.myvtex.com/_v/private/typings/linked/v1/propzpartnerbr.propz-frontend@0.0.0+build1702155155/public/@types/propzpartnerbr.propz-frontend":
+"propzpartnerbr.propz-frontend@https://samuel--propzpartnerbr.myvtex.com/_v/private/typings/linked/v1/propzpartnerbr.propz-frontend@0.0.0+build1702498522/public/@types/propzpartnerbr.propz-frontend":
   version "0.0.0"
-  resolved "https://samuel--propzpartnerbr.myvtex.com/_v/private/typings/linked/v1/propzpartnerbr.propz-frontend@0.0.0+build1702155155/public/@types/propzpartnerbr.propz-frontend#d029bde284ff933fdf5430a5e32479eecf20c8f4"
+  resolved "https://samuel--propzpartnerbr.myvtex.com/_v/private/typings/linked/v1/propzpartnerbr.propz-frontend@0.0.0+build1702498522/public/@types/propzpartnerbr.propz-frontend#51894f6c663550f7b476901191a60a156b7dfa51"
 
 psl@^1.1.28:
   version "1.8.0"
@@ -4992,13 +4992,13 @@ verror@1.10.0:
   version "0.10.0"
   resolved "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.product-context@0.10.0/public/@types/vtex.product-context#c5e2a97b404004681ee12f4fff7e6b62157786cc"
 
-"vtex.product-summary-context@http://vtex.vtexassets.com/_v/public/typings/v1/vtex.product-summary-context@0.10.0/public/@types/vtex.product-summary-context":
-  version "0.10.0"
-  resolved "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.product-summary-context@0.10.0/public/@types/vtex.product-summary-context#b19d6782b61766a801e43741659b9f49b4f289ab"
+"vtex.product-summary-context@http://vtex.vtexassets.com/_v/public/typings/v1/vtex.product-summary-context@0.12.0/public/@types/vtex.product-summary-context":
+  version "0.12.0"
+  resolved "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.product-summary-context@0.12.0/public/@types/vtex.product-summary-context#423c6d700447d0a443ca64a5374dc97928727ff0"
 
-"vtex.product-summary@http://vtex.vtexassets.com/_v/public/typings/v1/vtex.product-summary@2.87.0/public/@types/vtex.product-summary":
-  version "2.87.0"
-  resolved "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.product-summary@2.87.0/public/@types/vtex.product-summary#e0e58da094d5851e020782b1e1791425361350b3"
+"vtex.product-summary@http://vtex.vtexassets.com/_v/public/typings/v1/vtex.product-summary@2.89.0/public/@types/vtex.product-summary":
+  version "2.89.0"
+  resolved "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.product-summary@2.89.0/public/@types/vtex.product-summary#7ab43385439c520bfb7db6c1d073fdb069776960"
 
 "vtex.render-runtime@http://vtex.vtexassets.com/_v/public/typings/v1/vtex.render-runtime@8.134.2/public/@types/vtex.render-runtime":
   version "8.134.2"
