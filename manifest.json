@@ -3,7 +3,7 @@
   "name": "propz-frontend",
   "version": "0.0.0",
   "title": "Propz frontend",
-  "description": "This app provides an Admin Interface for the configurations and a integration to the Loja santo antonio services",
+  "description": "This app provides the Store Front elements for the integration to the Propz services",
   "builders": {
     "react": "3.x",
     "messages": "1.x",
@@ -24,6 +24,17 @@
   "registries": [
     "smartcheckout"
   ],
+  "billingOptions": {
+    "type": "free",
+    "support": {
+      "email": "suporte@propz.com.br",
+      "url": "https://propz.zendesk.com"
+    },
+    "availableCountries": [
+      "*"
+    ],
+    "plans": []
+  },
   "policies": [],
   "$schema": "https://raw.githubusercontent.com/vtex/node-vtex-api/master/gen/manifest.schema"
 }
