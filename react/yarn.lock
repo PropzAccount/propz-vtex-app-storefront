@@ -4062,9 +4062,9 @@ prop-types@^15.6.2, prop-types@^15.7.2:
     object-assign "^4.1.1"
     react-is "^16.8.1"
 
-"propzpartnerbr.propz-frontend@https://integrations--propzpartnerbr.myvtex.com/_v/private/typings/linked/v1/propzpartnerbr.propz-frontend@0.0.0+build1702924196/public/@types/propzpartnerbr.propz-frontend":
+"propzpartnerbr.propz-frontend@https://samuel--propzpartnerbr.myvtex.com/_v/private/typings/linked/v1/propzpartnerbr.propz-frontend@0.0.0+build1712354303/public/@types/propzpartnerbr.propz-frontend":
   version "0.0.0"
-  resolved "https://integrations--propzpartnerbr.myvtex.com/_v/private/typings/linked/v1/propzpartnerbr.propz-frontend@0.0.0+build1702924196/public/@types/propzpartnerbr.propz-frontend#e3f7b066c293242f1d98d8061498fe923fb6d45b"
+  resolved "https://samuel--propzpartnerbr.myvtex.com/_v/private/typings/linked/v1/propzpartnerbr.propz-frontend@0.0.0+build1712354303/public/@types/propzpartnerbr.propz-frontend#cac4f70343dc9cd4cb6905e56788919fd4f17d2c"
 
 psl@^1.1.28:
   version "1.8.0"
