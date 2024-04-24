@@ -30,10 +30,7 @@
       "email": "suporte@propz.com.br",
       "url": "https://propz.zendesk.com"
     },
-    "availableCountries": [
-      "*"
-    ],
-    "plans": []
+    "availableCountries": [ "*" ]
   },
   "policies": [],
   "$schema": "https://raw.githubusercontent.com/vtex/node-vtex-api/master/gen/manifest.schema"
