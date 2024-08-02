@@ -1,0 +1,17 @@
+{
+  "name": "Propz Frontend",
+  "headline": "Integrate your store with Propz platform.",
+  "overview": "Propz is a technology company pioneer in the application of Artificial Intelligence to leverage retail sales. The combination of CRM, Big Data and Machine Learning, combined with retail expertise, is able to automate multichannel marketing campaigns.",
+  "features": [
+    "Integrate with a marketing campaign automation tool",
+    "Integrated CRM Solution",
+    "Promotional Intelligence",
+    "Automation of multichannel marketing campaigns"
+  ],
+  "additionalInformation": "The final configuration of the app will be done after installing the propzpartnerbr.propz-backend app",
+  "websiteURL": "https://propz.com.br/",
+  "support": {
+    "url": "https://propz.zendesk.com",
+    "email": "suporte@propz.com.br"
+  }
+}
