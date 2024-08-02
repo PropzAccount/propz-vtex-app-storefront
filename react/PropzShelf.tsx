@@ -1,13 +1,32 @@
 /* eslint-disable vtex/prefer-early-return */
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import type { ComponentType, ReactNode } from 'react'
-// import { Loading } from 'vtex.render-runtime'
+import { canUseDOM } from 'vtex.render-runtime'
+// import type { MaybeProduct } from 'vtex.product-context/react/ProductTypes'
 
 import Banner from './components/Banner'
 import ProductSummaryList from './components/ProductSummaryList'
 import { useSessionAndPromotions } from './hooks/UseSessionAndPromotions'
 
 import './styles/shelf/propzpartnerbr.propz-frontend.css'
+
+// interface IPromotionMaxPerCustumer {
+//   pricePropz: Array<{
+//     sellingPrice: number
+//     listPrice: number
+//   }>
+//   priceVtex: Array<{
+//     sellingPrice: number
+//     listPrice: number
+//   }>
+//   maxItems: number
+//   product: string
+// }
+
+// interface IPromotions {
+//   products: MaybeProduct[]
+//   promotionMaxPerCustomer: IPromotionMaxPerCustumer[]
+// }
 
 interface IProductSummaryProps {
   product: any
@@ -39,12 +58,60 @@ const PropzShelf = ({
   listName,
   ProductSummary,
 }: IPropzShelf) => {
-  const { session, promotions, loading } = useSessionAndPromotions()
+  const { session } = useSessionAndPromotions()
+
+  const [promotions, setPromotions] = useState([])
+
+  const [loading, setLoading] = useState(true)
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  useEffect(() => {
+    const controller = new AbortController()
+    const { signal } = controller
+
+    if (canUseDOM) {
+      if (session.user.namespaces?.profile?.isAuthenticated?.value === 'true') {
+        const user = session.user.namespaces.profile.document.value
+
+        const documentUser = user.replace(/[^0-9]+/g, '')
+
+        const getProductsPropz = async () => {
+          try {
+            const response = await fetch(
+              `/_v/get-promotion?document=${documentUser}`,
+              {
+                signal,
+              }
+            )
+
+            const dataPromotions = await response.json()
+
+            if (dataPromotions.products.length > 0) {
+              setPromotions(dataPromotions.products)
+              setLoading(false)
+              localStorage.setItem(
+                '@propz/promotion-ma-per-customer',
+                JSON.stringify(dataPromotions.promotionMaxPerCustomer)
+              )
+            }
+          } catch (error) {
+            controller.abort()
+          }
+        }
+
+        getProductsPropz()
+      }
+    }
+
+    return () => {
+      controller.abort()
+    }
+  }, [session])
 
   const isAuthenticated =
     session.user.namespaces?.profile?.isAuthenticated?.value
 
-  const hasPromotions = promotions?.products?.length > 0
+  const hasPromotions = promotions?.length > 0
 
   const isShowBanner =
     (loading && isAuthenticated === 'false') || (loading && !isAuthenticated)
@@ -62,7 +129,7 @@ const PropzShelf = ({
       <ProductSummaryList
         ProductSummary={ProductSummary}
         listName={listName}
-        promotions={promotions.products}
+        promotions={promotions}
         title={title}
       >
         {children}
