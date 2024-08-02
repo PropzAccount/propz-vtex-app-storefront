@@ -3,9 +3,10 @@ import { canUseDOM } from 'vtex.render-runtime'
 import { useProduct } from 'vtex.product-context'
 import { useCssHandles } from 'vtex.css-handles'
 
-import { PromotionType } from './typings/promotionPropz'
-import './styles/messageMechanic/propzpartnerbr.propz-frontend.css'
+import type { PromotionType } from './typings/promotionPropz'
 import { useSessionAndPromotions } from './hooks/UseSessionAndPromotions'
+
+import './styles/messageMechanic/propzpartnerbr.propz-frontend.css'
 
 const CSS_HANDLES = ['mechanic-message'] as const
 
@@ -31,31 +32,33 @@ const MechanicPromotion = () => {
       if (promotionPropz) {
         const promotions = JSON.parse(promotionPropz)
 
-        promotions.map((promotion: PromotionType) => {
-          const mechanicVirtualPack =
-            promotion.typeMechanic === 'virtual_pack' &&
-            product?.productReference === promotion.product
+        if (promotions.length > 0) {
+          promotions.map((promotion: PromotionType) => {
+            const mechanicVirtualPack =
+              promotion.typeMechanic === 'virtual_pack' &&
+              product?.productReference === promotion.product
 
-          const mechanicGetAnaPay =
-            promotion.typeMechanic === 'get_and_pay' &&
-            product?.productReference === promotion.product
+            const mechanicGetAnaPay =
+              promotion.typeMechanic === 'get_and_pay' &&
+              product?.productReference === promotion.product
 
-          if (mechanicVirtualPack) {
-            setMechanic({
-              isShow: true,
-              message: `Promoção válida a cada ${promotion.quantityFlag} unid.`,
-            })
-          }
+            if (mechanicVirtualPack) {
+              setMechanic({
+                isShow: true,
+                message: `Promoção válida a cada ${promotion.quantityFlag} unid.`,
+              })
+            }
 
-          if (mechanicGetAnaPay) {
-            setMechanic({
-              isShow: true,
-              message: `Promoção válida acima de ${promotion.quantityFlag} unid.`,
-            })
-          }
+            if (mechanicGetAnaPay) {
+              setMechanic({
+                isShow: true,
+                message: `Promoção válida acima de ${promotion.quantityFlag} unid.`,
+              })
+            }
 
-          return promotion
-        })
+            return promotion
+          })
+        }
       }
     }
   }, [product, session.isAuthenticated])
