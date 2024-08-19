@@ -21,18 +21,15 @@
     "vtex.structured-data": "0.x",
     "vtex.product-summary-context": "0.x"
   },
-  "registries": [
-    "smartcheckout"
-  ],
+  "registries": ["smartcheckout"],
   "billingOptions": {
     "type": "free",
     "support": {
       "email": "suporte@propz.com.br",
       "url": "https://propz.zendesk.com"
     },
-    "availableCountries": [
-      "*"
-    ]
+    "availableCountries": ["*"],
+    "plans": []
   },
   "policies": [],
   "$schema": "https://raw.githubusercontent.com/vtex/node-vtex-api/master/gen/manifest.schema"
