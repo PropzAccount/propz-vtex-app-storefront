@@ -1,7 +1,7 @@
 {
   "vendor": "propzpartnerbr",
   "name": "propz-frontend",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "title": "Propz frontend",
   "description": "This app provides the Store Front elements for the integration to the Propz services",
   "builders": {
