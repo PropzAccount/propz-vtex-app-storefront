@@ -1,7 +1,7 @@
 {
   "vendor": "propzpartnerbr",
   "name": "propz-frontend",
-  "version": "1.0.0",
+  "version": "0.0.3",
   "title": "Propz frontend",
   "description": "This app provides the Store Front elements for the integration to the Propz services",
   "builders": {
@@ -21,14 +21,18 @@
     "vtex.structured-data": "0.x",
     "vtex.product-summary-context": "0.x"
   },
-  "registries": ["smartcheckout"],
+  "registries": [
+    "smartcheckout"
+  ],
   "billingOptions": {
     "type": "free",
     "support": {
       "email": "suporte@propz.com.br",
       "url": "https://propz.zendesk.com"
     },
-    "availableCountries": ["*"],
+    "availableCountries": [
+      "*"
+    ],
     "plans": []
   },
   "policies": [],
