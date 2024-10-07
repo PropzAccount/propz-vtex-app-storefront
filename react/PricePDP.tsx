@@ -43,6 +43,9 @@ const PricePDP = ({ children }: IPricePDP) => {
             product,
           }),
           signal,
+          headers: {
+            'X-Vtex-Use-Https': 'true',
+          },
         })
 
         const data = await response.json()

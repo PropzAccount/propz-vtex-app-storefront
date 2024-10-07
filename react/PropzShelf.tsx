@@ -81,6 +81,9 @@ const PropzShelf = ({
               `/_v/get-promotion?document=${documentUser}`,
               {
                 signal,
+				headers: {
+                  'X-Vtex-Use-Https': 'true',
+                },
               }
             )
 

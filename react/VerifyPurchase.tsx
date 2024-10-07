@@ -74,6 +74,9 @@ const VerifyPurchase = () => {
         document: documentUser,
         sessionId,
       }),
+      headers: {
+        'X-Vtex-Use-Https': 'true',
+      },
     })
 
     const data = (await response).json()

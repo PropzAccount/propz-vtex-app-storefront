@@ -19,6 +19,9 @@ const RegisterPurchase = () => {
                 method: 'POST',
                 signal,
                 body: register,
+                headers: {
+                  'X-Vtex-Use-Https': 'true',
+                },
               })
 
               if (response.ok) {
