@@ -78,7 +78,7 @@ const PropzShelf = ({
         const getProductsPropz = async () => {
           try {
             const response = await fetch(
-              `http://${window.location.hostname}/_v/get-promotion?document=${documentUser}`,
+              `/_v/get-promotion?document=${documentUser}`,
               {
                 signal,
                 headers: {

@@ -38,20 +38,17 @@ const PricePDP = ({ children }: IPricePDP) => {
 
     if (canUseDOM) {
       const getPrice = async () => {
-        const response = await fetch(
-          `http://${window.location.hostname}/_v/post-price-pdp`,
-          {
-            method: 'POST',
-            body: JSON.stringify({
-              document: documentUser,
-              product,
-            }),
-            signal,
-            headers: {
-              'X-VTEX-Use-Https': 'true',
-            },
-          }
-        )
+        const response = await fetch(`/_v/post-price-pdp`, {
+          method: 'POST',
+          body: JSON.stringify({
+            document: documentUser,
+            product,
+          }),
+          signal,
+          headers: {
+            'X-VTEX-Use-Https': 'true',
+          },
+        })
 
         const data = await response.json()
 

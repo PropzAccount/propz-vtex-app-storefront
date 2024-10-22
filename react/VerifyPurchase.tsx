@@ -68,20 +68,17 @@ const VerifyPurchase = () => {
 
     const sessionId = session.user.id
 
-    const response = fetch(
-      `http://${window.location.hostname}/_v/post-verify-purchase`,
-      {
-        method: 'POST',
-        body: JSON.stringify({
-          orderFormId: orderForm.id,
-          document: documentUser,
-          sessionId,
-        }),
-        headers: {
-          'X-VTEX-Use-Https': 'true',
-        },
-      }
-    )
+    const response = fetch(`/_v/post-verify-purchase`, {
+      method: 'POST',
+      body: JSON.stringify({
+        orderFormId: orderForm.id,
+        document: documentUser,
+        sessionId,
+      }),
+      headers: {
+        'X-VTEX-Use-Https': 'true',
+      },
+    })
 
     const data = (await response).json()
 

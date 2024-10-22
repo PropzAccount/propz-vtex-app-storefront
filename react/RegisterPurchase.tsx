@@ -15,17 +15,14 @@ const RegisterPurchase = () => {
         if (registerPuchase.ticket.items.length > 0) {
           try {
             const registerPurchase = async () => {
-              const response = await fetch(
-                `http://${window.location.hostname}/_v/post-register-purchase`,
-                {
-                  method: 'POST',
-                  signal,
-                  body: register,
-                  headers: {
-                    'X-VTEX-Use-Https': 'true',
-                  },
-                }
-              )
+              const response = await fetch(`/_v/post-register-purchase`, {
+                method: 'POST',
+                signal,
+                body: register,
+                headers: {
+                  'X-VTEX-Use-Https': 'true',
+                },
+              })
 
               if (response.ok) {
                 localStorage.removeItem('@propz/register-puchase')
