@@ -1,7 +1,8 @@
-import React, { ReactNode, memo, useEffect, useState } from 'react'
+import type { ReactNode } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import { useProductDispatch, useProduct } from 'vtex.product-context'
 import { canUseDOM } from 'vtex.render-runtime'
-import { MaybeProduct } from 'vtex.product-context/react/ProductTypes'
+import type { MaybeProduct } from 'vtex.product-context/react/ProductTypes'
 
 import { useSessionAndPromotions } from './hooks/UseSessionAndPromotions'
 import Loading from './components/Loading'
@@ -26,27 +27,36 @@ const PricePDP = ({ children }: IPricePDP) => {
       return
     }
 
-    const documentUser = session?.user?.namespaces?.profile?.document?.value.replace(
-      /[^0-9]+/g,
-      ''
-    )
+    const documentUser =
+      session?.user?.namespaces?.profile?.document?.value.replace(
+        /[^0-9]+/g,
+        ''
+      )
 
     const controller = new AbortController()
     const { signal } = controller
 
     if (canUseDOM) {
       const getPrice = async () => {
-        const response = await fetch('/_v/post-price-pdp', {
-          method: 'POST',
-          body: JSON.stringify({
-            document: documentUser,
-            product,
-          }),
-          signal,
-          headers: {
-            'X-Vtex-Use-Https': 'true',
-          },
-        })
+        const urlProtocol =
+          window.location.protocol === 'https:' ? 'https' : 'http'
+
+        const urlPort = urlProtocol === 'https' ? '443' : '80'
+
+        const response = await fetch(
+          `${urlProtocol}://${window.location.hostname}:${urlPort}/_v/post-price-pdp`,
+          {
+            method: 'POST',
+            body: JSON.stringify({
+              document: documentUser,
+              product,
+            }),
+            signal,
+            headers: {
+              'X-Vtex-Use-Https': 'true',
+            },
+          }
+        )
 
         const data = await response.json()
 

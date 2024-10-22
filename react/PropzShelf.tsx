@@ -77,12 +77,17 @@ const PropzShelf = ({
 
         const getProductsPropz = async () => {
           try {
+            const urlProtocol =
+              window.location.protocol === 'https:' ? 'https' : 'http'
+
+            const urlPort = urlProtocol === 'https' ? '443' : '80'
+
             const response = await fetch(
-              `/_v/get-promotion?document=${documentUser}`,
+              `${urlProtocol}://${window.location.hostname}:${urlPort}/_v/get-promotion?document=${documentUser}`,
               {
                 signal,
-				headers: {
-                  'X-Vtex-Use-Https': 'true',
+                headers: {
+                  'X-VTEX-Use-Https': 'true',
                 },
               }
             )

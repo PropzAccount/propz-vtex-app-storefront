@@ -60,24 +60,32 @@ const VerifyPurchase = () => {
   const queueStatusRef = useQueueStatus(listen)
 
   const getPromo = useCallback(async () => {
-    const documentUser = session?.user?.namespaces?.profile?.document?.value.replace(
-      /[^0-9]+/g,
-      ''
-    )
+    const documentUser =
+      session?.user?.namespaces?.profile?.document?.value.replace(
+        /[^0-9]+/g,
+        ''
+      )
 
     const sessionId = session.user.id
 
-    const response = fetch('/_v/post-verify-purchase', {
-      method: 'POST',
-      body: JSON.stringify({
-        orderFormId: orderForm.id,
-        document: documentUser,
-        sessionId,
-      }),
-      headers: {
-        'X-Vtex-Use-Https': 'true',
-      },
-    })
+    const urlProtocol = window.location.protocol === 'https:' ? 'https' : 'http'
+
+    const urlPort = urlProtocol === 'https' ? '443' : '80'
+
+    const response = fetch(
+      `${urlProtocol}://${window.location.hostname}:${urlPort}/_v/post-verify-purchase`,
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          orderFormId: orderForm.id,
+          document: documentUser,
+          sessionId,
+        }),
+        headers: {
+          'X-Vtex-Use-Https': 'true',
+        },
+      }
+    )
 
     const data = (await response).json()
 
@@ -94,8 +102,9 @@ const VerifyPurchase = () => {
     const isAuthenticated =
       session?.user?.namespaces?.profile?.isAuthenticated?.value === 'true'
 
-    if (queueStatusRef.current !== QueueStatus.FULFILLED || !isAuthenticated)
+    if (queueStatusRef.current !== QueueStatus.FULFILLED || !isAuthenticated) {
       return
+    }
 
     if (orderForm.items.length > 0) {
       const order = await enqueue(() => getPromo())
