@@ -68,12 +68,8 @@ const VerifyPurchase = () => {
 
     const sessionId = session.user.id
 
-    const urlProtocol = window.location.protocol === 'https:' ? 'https' : 'http'
-
-    const urlPort = urlProtocol === 'https' ? '443' : '80'
-
     const response = fetch(
-      `${urlProtocol}://${window.location.hostname}:${urlPort}/_v/post-verify-purchase`,
+      `http://${window.location.hostname}/_v/post-verify-purchase`,
       {
         method: 'POST',
         body: JSON.stringify({
@@ -82,7 +78,7 @@ const VerifyPurchase = () => {
           sessionId,
         }),
         headers: {
-          'X-Vtex-Use-Https': 'true',
+          'X-VTEX-Use-Https': 'true',
         },
       }
     )

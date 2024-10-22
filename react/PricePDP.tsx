@@ -38,13 +38,8 @@ const PricePDP = ({ children }: IPricePDP) => {
 
     if (canUseDOM) {
       const getPrice = async () => {
-        const urlProtocol =
-          window.location.protocol === 'https:' ? 'https' : 'http'
-
-        const urlPort = urlProtocol === 'https' ? '443' : '80'
-
         const response = await fetch(
-          `${urlProtocol}://${window.location.hostname}:${urlPort}/_v/post-price-pdp`,
+          `http://${window.location.hostname}/_v/post-price-pdp`,
           {
             method: 'POST',
             body: JSON.stringify({
@@ -53,7 +48,7 @@ const PricePDP = ({ children }: IPricePDP) => {
             }),
             signal,
             headers: {
-              'X-Vtex-Use-Https': 'true',
+              'X-VTEX-Use-Https': 'true',
             },
           }
         )

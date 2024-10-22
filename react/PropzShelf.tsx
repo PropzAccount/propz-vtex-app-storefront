@@ -77,13 +77,8 @@ const PropzShelf = ({
 
         const getProductsPropz = async () => {
           try {
-            const urlProtocol =
-              window.location.protocol === 'https:' ? 'https' : 'http'
-
-            const urlPort = urlProtocol === 'https' ? '443' : '80'
-
             const response = await fetch(
-              `${urlProtocol}://${window.location.hostname}:${urlPort}/_v/get-promotion?document=${documentUser}`,
+              `http://${window.location.hostname}/_v/get-promotion?document=${documentUser}`,
               {
                 signal,
                 headers: {
